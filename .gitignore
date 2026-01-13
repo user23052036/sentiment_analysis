@@ -1,5 +1,14 @@
+# environments
 venv/
-~lock.*
+
+# datasets & artifacts
+data/
+sentiment_analysis_data/
 models/
 nltk_data/
 
+# notebooks
+.ipynb_checkpoints/
+
+# misc
+~lock.*
