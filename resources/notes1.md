@@ -152,3 +152,194 @@ Because:
 * Keeping `4` breaks interpretation
 
 ---
+
+## What **punkt** actually is
+
+**Punkt** is a **sentence boundary detection model**.
+
+Its job:
+
+* Decide **where a sentence ends**
+* Decide **what counts as a word**
+
+This is **not trivial**.
+
+---
+
+## Why naive splitting fails
+
+If you do this:
+
+```python
+text.split(".")
+```
+
+You break on:
+
+* Abbreviations → `Dr.`, `Mr.`, `U.S.`
+* Numbers → `3.14`
+* URLs → `example.com`
+* Ellipses → `...`
+
+Result: **wrong sentences**.
+
+---
+
+## What Punkt does differently
+
+Punkt uses:
+
+* Statistical rules
+* Learned patterns from real text
+
+So it knows:
+
+* `Dr.` ≠ sentence end
+* `U.S.` ≠ sentence end
+* `Hello!` = sentence end
+* `Is this ok?` = sentence end
+
+Example:
+
+```python
+from nltk.tokenize import sent_tokenize
+
+sent_tokenize("Dr. Smith lives in the U.S. He works at Google.")
+```
+
+Correct output:
+
+```text
+[
+  "Dr. Smith lives in the U.S.",
+  "He works at Google."
+]
+```
+
+A simple split **cannot do this**.
+
+---
+
+### Why YOU need it (practically)
+
+You use Punkt when you want:
+
+* Accurate sentence splitting
+* Correct word tokenization
+* Clean input for ML models
+* Reliable NLP preprocessing
+
+If your sentences are wrong:
+
+* Features are wrong
+* Models learn garbage
+* Accuracy drops
+
+---
+
+### Bottom line (truth)
+
+You are not “using punkt”.
+
+You are **loading linguistic intelligence** that Python does not have by default.
+
+---
+
+Yes. I’ll strip this down to **plain, human language** and then map it back to code.
+
+---
+
+## Relative Path for punkit
+
+Your notebook is here:
+
+```
+sentiment_analysis/src/load_data.ipynb
+```
+
+But you want `punkt` stored **once**, at:
+
+```
+sentiment_analysis/nltk_data/
+```
+
+So Python must figure out:
+
+> “From where I am running, how do I reach the project root?”
+
+That’s exactly what these two lines do.
+
+---
+
+### Line 1
+
+```python
+PROJECT_ROOT = os.path.abspath("..")
+```
+
+### Layman meaning:
+
+> “Go **one folder up** from where this notebook is running, and give me the **full absolute path**.”
+
+* `.`  → current folder (`src/`)
+* `..` → parent folder (`sentiment_analysis/`)
+
+So:
+
+```
+src/  →  ..
+```
+
+---
+
+### Line 2
+
+```python
+NLTK_DATA_DIR = os.path.join(PROJECT_ROOT, "nltk_data")
+```
+
+### Layman meaning:
+
+> “Inside the project root folder, create a path that points to a folder named `nltk_data`.”
+
+So it becomes:
+
+```
+/home/midori/SENTIMENT_ANALYSIS/nltk_data
+```
+
+### Why `os.path.join`
+
+* Works on Linux, Windows, macOS
+* Handles `/` vs `\` correctly
+* Prevents path bugs
+
+---
+
+### Mental picture (important)
+
+You are basically telling Python:
+
+> “No matter where this code runs from, my project lives **one level up**, and my NLTK data lives **inside that project**.”
+
+---
+
+Short and precise:
+
+```python
+nltk.data.path.insert(0, NLTK_DATA_DIR)
+```
+
+**Meaning:**
+Tell NLTK to **look in your project’s `nltk_data` folder first** when searching for resources like `punkt`.
+
+Why `insert(0, ...)`:
+
+* `0` = highest priority
+* Overrides global locations (`~/nltk_data`, `/usr/share/...`)
+
+In plain terms:
+
+> “Use my project’s NLTK data before anything installed on the system.”
+
+---

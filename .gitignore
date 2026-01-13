@@ -1,4 +1,5 @@
-sentiment_analysis_data/
 venv/
 ~lock.*
+models/
+nltk_data/
 
