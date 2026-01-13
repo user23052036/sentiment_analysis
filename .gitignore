@@ -1,2 +1,4 @@
-sentiment_analysis_data
-venv
+sentiment_analysis_data/
+venv/
+~lock.*
+
