@@ -1,5 +1,5 @@
 # environments
-venv/
+.venv/
 
 # datasets & artifacts
 data/
@@ -12,3 +12,6 @@ nltk_data/
 
 # misc
 ~lock.*
+
+# models
+*.joblib
